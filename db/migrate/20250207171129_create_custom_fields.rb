@@ -7,6 +7,6 @@ class CreateCustomFields < ActiveRecord::Migration[7.2]
       t.references :client, null: false, foreign_key: true, index: true
       t.timestamps
     end
-    add_index :custom_fields, [:client_id, :name], unique: true
+    add_index :custom_fields, [ :client_id, :name ], unique: true
   end
 end

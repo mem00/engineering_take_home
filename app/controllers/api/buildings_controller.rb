@@ -1,7 +1,7 @@
 module Api
   class BuildingsController < ApplicationController
     skip_before_action :verify_authenticity_token
-    before_action :set_building, only: [:update]
+    before_action :set_building, only: [ :update ]
 
     def index
       buildings = Building.includes(
@@ -20,7 +20,7 @@ module Api
     def create
       @building = Building.new(building_params.except(:custom_fields))
       @building.custom_fields = building_params[:custom_fields] || {}
-  
+
       if @building.save
         create_custom_field_values
         render json: format_response(@building), status: :created
@@ -28,11 +28,11 @@ module Api
         render_error
       end
     end
-  
+
     def update
       @building.assign_attributes(building_params.except(:custom_fields))
       @building.custom_fields = building_params[:custom_fields] || {}
-  
+
       if @building.save
         update_custom_field_values
         render json: format_response(@building)
@@ -46,13 +46,13 @@ module Api
 
     def building_params
       params.require(:building).permit(
-        :address, :city, :state_abbr, :postal_code, :client_id, 
+        :address, :city, :state_abbr, :postal_code, :client_id,
         custom_fields: {}
       )
     end
 
     def set_building
-      @building = Building.find_by(id: params[:id]) or raise ActionController::RoutingError.new('Not Found')
+      @building = Building.find_by(id: params[:id]) or raise ActionController::RoutingError.new("Not Found")
     end
 
     def create_custom_field_values
@@ -72,14 +72,14 @@ module Api
 
     def render_error
       render json: {
-        status: 'error',
+        status: "error",
         errors: @building.errors.full_messages
       }, status: :unprocessable_entity
     end
 
     def format_responses(buildings)
       {
-        status: 'success',
+        status: "success",
         buildings: buildings.map do |building|
           building_hash(building)
         end
@@ -88,7 +88,7 @@ module Api
 
     def format_response(building)
       {
-        status: 'success',
+        status: "success",
         building: building_hash(building)
       }
     end
@@ -108,7 +108,7 @@ module Api
         .each_with_object({}) { |cfv, h| h[cfv.custom_field.name] = cfv.value.to_s }
 
       building.client.custom_fields.each do |cf|
-        response[cf.name] = existing_values[cf.name] || ''
+        response[cf.name] = existing_values[cf.name] || ""
       end
 
       response

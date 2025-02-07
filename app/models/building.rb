@@ -44,11 +44,11 @@ class Building < ApplicationRecord
 
   def validate_number_field(field, value)
     return if value.blank?
-    
+
     begin
       Float(value)
     rescue ArgumentError, TypeError
-      errors.add(field.name, 'must be a valid number')
+      errors.add(field.name, "must be a valid number")
     end
   end
 

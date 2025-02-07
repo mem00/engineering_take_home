@@ -3,9 +3,9 @@ class CustomField < ApplicationRecord
   has_many :custom_field_values, dependent: :destroy
 
   enum field_type: {
-    number: 'number',
-    freeform: 'freeform',
-    enumeration: 'enumeration'
+    number: "number",
+    freeform: "freeform",
+    enumeration: "enumeration"
   }
 
   validates :name, presence: true, uniqueness: { scope: :client_id }

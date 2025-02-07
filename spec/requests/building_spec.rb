@@ -4,7 +4,7 @@ RSpec.describe "Buildings API", type: :request do
   let!(:custom_fields) do
     [
       create(:custom_field, client: client, name: 'floors', field_type: 'number'),
-      create(:custom_field, client: client, name: 'material', field_type: 'enumeration', options: ['Brick', 'Concrete'])
+      create(:custom_field, client: client, name: 'material', field_type: 'enumeration', options: [ 'Brick', 'Concrete' ])
     ]
   end
 
@@ -37,18 +37,18 @@ RSpec.describe "Buildings API", type: :request do
 
     context "with invalid parameters" do
       it "returns errors for invalid custom field type" do
-        invalid_params = valid_attributes.deep_merge(building: { custom_fields: {floors: "five"} })
+        invalid_params = valid_attributes.deep_merge(building: { custom_fields: { floors: "five" } })
         post "/api/buildings", params: invalid_params
-        
+
         expect(response).to have_http_status(:unprocessable_entity)
         expect(json["status"]).to eq("error")
         expect(json["errors"]).to include("Floors must be a valid number")
       end
 
       it "returns errors for unknown custom fields" do
-        invalid_params = valid_attributes.deep_merge(building: { custom_fields: {unknown_field: "value"} })
+        invalid_params = valid_attributes.deep_merge(building: { custom_fields: { unknown_field: "value" } })
         post "/api/buildings", params: invalid_params
-        
+
         expect(response).to have_http_status(:unprocessable_entity)
         expect(json['errors']).to include('Invalid field: unknown_field')
       end
@@ -56,7 +56,7 @@ RSpec.describe "Buildings API", type: :request do
       it "returns errors for missing required fields" do
         invalid_params = valid_attributes.deep_merge(building: { address: nil })
         post "/api/buildings", params: invalid_params
-        
+
         expect(response).to have_http_status(:unprocessable_entity)
         expect(json["errors"]).to include("Address can't be blank")
       end
@@ -76,9 +76,9 @@ RSpec.describe "Buildings API", type: :request do
 
     context "with invalid parameters" do
       it "returns errors for invalid updates" do
-        invalid_params = valid_attributes.deep_merge(building: { custom_fields: { material: "Wood" }})
+        invalid_params = valid_attributes.deep_merge(building: { custom_fields: { material: "Wood" } })
         put "/api/buildings/#{building.id}", params: invalid_params
-        
+
         expect(response).to have_http_status(:unprocessable_entity)
         expect(json['errors']).to include('Material must be one of: Brick, Concrete')
       end
@@ -95,9 +95,9 @@ RSpec.describe "Buildings API", type: :request do
 
     it "returns paginated buildings with custom fields" do
       get "/api/buildings"
-      
+
       expect(response).to have_http_status(:success)
-      expect(json['buildings'].size).to eq(5) 
+      expect(json['buildings'].size).to eq(5)
       expect(json['buildings'].first).to include(
         'id', 'client_name', 'address', 'floors', 'material'
       )
@@ -112,7 +112,7 @@ RSpec.describe "Buildings API", type: :request do
       building = create(:building, client: client)
       Building.refresh
       get "/api/buildings"
-      
+
       puts json['buildings'], building.id
       found = json['buildings'].find { |b| b['id'] == building.id.to_s }
       expect(found['floors']).to be_empty
@@ -122,7 +122,7 @@ RSpec.describe "Buildings API", type: :request do
     it "includes client name and address info" do
       get "/api/buildings"
       building = json['buildings'].first
-      
+
       expect(building['client_name']).to eq(client.name)
       expect(building).to include('address', 'city', 'state_abbr', 'postal_code')
     end

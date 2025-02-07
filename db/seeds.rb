@@ -13,15 +13,15 @@
   )
 
   custom_fields = [
-    { 
+    {
       name: Faker::Commerce.unique.department + " (number)",
-      field_type: :number 
+      field_type: :number
     },
-    { 
+    {
       name: Faker::Commerce.unique.department + " (freeform)",
-      field_type: :freeform 
+      field_type: :freeform
     },
-    { 
+    {
       name: Faker::Commerce.unique.department + " (enum)",
       field_type: :enumeration,
       options: Array.new(3) { Faker::Commerce.material }.uniq
@@ -42,14 +42,14 @@
 
     client.custom_fields.each do |custom_field|
       value = case custom_field.field_type
-              when 'number'
+      when 'number'
                 Faker::Number.between(from: 1, to: 1000).to_s
-              when 'freeform'
+      when 'freeform'
                 Faker::Lorem.sentence
-              when 'enumeration'
+      when 'enumeration'
                 custom_field.options.sample
-              end
-              
+      end
+
       building.custom_field_values.find_or_create_by!(
         custom_field:,
         value:
