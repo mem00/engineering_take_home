@@ -5,7 +5,7 @@ class CustomField < ApplicationRecord
   enum field_type: {
     number: 'number',
     freeform: 'freeform',
-    enum: 'enum'
+    enumeration: 'enumeration'
   }
 
   validates :name, presence: true, uniqueness: { scope: :client_id }
