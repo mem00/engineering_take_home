@@ -3,8 +3,8 @@ RSpec.describe "Buildings API", type: :request do
   let!(:client) { create(:client) }
   let!(:custom_fields) do
     [
-      create(:custom_field, client: client, name: 'floors', field_type: 'number'),
-      create(:custom_field, client: client, name: 'material', field_type: 'enumeration', options: [ 'Brick', 'Concrete' ])
+      create(:custom_field, client:, name: 'floors', field_type: 'number'),
+      create(:custom_field, client:, name: 'material', field_type: 'enumeration', options: [ 'Brick', 'Concrete' ])
     ]
   end
 
@@ -64,7 +64,7 @@ RSpec.describe "Buildings API", type: :request do
   end
 
   describe "PUT /api/buildings/:id" do
-    let!(:building) { create(:building, client: client) }
+    let!(:building) { create(:building, client:) }
 
     context "with valid parameters" do
       it "updates the building" do
@@ -91,7 +91,7 @@ RSpec.describe "Buildings API", type: :request do
   end
 
   describe "GET /api/buildings" do
-    let!(:buildings) { create_list(:building, 7, client: client) }
+    let!(:buildings) { create_list(:building, 7, client:) }
 
     it "returns paginated buildings with custom fields" do
       get "/api/buildings"
@@ -109,11 +109,10 @@ RSpec.describe "Buildings API", type: :request do
     end
 
     it "returns empty custom fields when no values exist" do
-      building = create(:building, client: client)
-      Building.refresh
+      Building.destroy_all
+      building = create(:building, client:)
       get "/api/buildings"
 
-      puts json['buildings'], building.id
       found = json['buildings'].find { |b| b['id'] == building.id.to_s }
       expect(found['floors']).to be_empty
       expect(found['material']).to be_empty
