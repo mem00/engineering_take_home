@@ -9,7 +9,10 @@ module Api
     private
 
     def format_response(custom_fields)
-      custom_fields.map { |custom_field| custom_field.as_json }
+      {
+        status: "success",
+        custom_fields: custom_fields.map { |custom_field| custom_field }
+      }
     end
   end
 end

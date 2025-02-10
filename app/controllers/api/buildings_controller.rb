@@ -18,8 +18,8 @@ module Api
     end
 
     def create
-      @building = Building.new(building_params.except(:custom_fields))
-      @building.custom_fields = building_params[:custom_fields] || {}
+      @building = Building.new(building_params)
+      @building.custom_fields = custom_field_params
 
       if @building.save
         create_custom_field_values
@@ -30,8 +30,8 @@ module Api
     end
 
     def update
-      @building.assign_attributes(building_params.except(:custom_fields))
-      @building.custom_fields = building_params[:custom_fields] || {}
+      @building.assign_attributes(building_params)
+      @building.custom_fields = custom_field_params
 
       if @building.save
         update_custom_field_values
@@ -46,8 +46,17 @@ module Api
 
     def building_params
       params.require(:building).permit(
-        :address, :city, :state_abbr, :postal_code, :client_id,
-        custom_fields: {}
+        :address, :city, :state_abbr, :postal_code, :client_id
+      )
+    end
+
+    def custom_field_params
+      client = Client.find_by(id: params[:building][:client_id])
+      return {} unless client
+      allowed_custom_fields = client.custom_fields.pluck(:name)
+
+      params.require(:building).permit(
+        *allowed_custom_fields
       )
     end
 

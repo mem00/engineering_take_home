@@ -29,7 +29,6 @@ class Building < ApplicationRecord
     end
   end
 
-
   def validate_unknown_fields
     return unless client && custom_fields
 
