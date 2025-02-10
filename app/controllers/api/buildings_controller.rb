@@ -10,7 +10,7 @@ module Api
         client: :custom_fields
       ).page(params[:page]).per(5)
 
-      if client_id = params[:client_id].present?
+      if client_id = params[:client_id]
         buildings = buildings.where(client_id:)
       end
 
